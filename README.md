@@ -1,0 +1,1 @@
+Searchable for Encrypted fields 
