@@ -1,0 +1,3 @@
+services:
+  field_encrypt_searchable.process_entities:
+    class: \Drupal\field_encrypt_searchable\FieldEncryptSearchableProcessEntities

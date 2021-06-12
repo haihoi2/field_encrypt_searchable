@@ -1,0 +1,31 @@
+add blind index entities:
+  title: 'Create new Blind index entities'
+
+administer blind index entities:
+  title: 'Administer Blind index entities'
+  description: 'Allow to access the administration form to configure Blind index entities.'
+  restrict access: true
+
+delete blind index entities:
+  title: 'Delete Blind index entities'
+
+edit blind index entities:
+  title: 'Edit Blind index entities'
+
+view published blind index entities:
+  title: 'View published Blind index entities'
+
+view unpublished blind index entities:
+  title: 'View unpublished Blind index entities'
+
+view all blind index revisions:
+  title: 'View all Blind index revisions'
+
+revert all blind index revisions:
+  title: 'Revert all Blind index revisions'
+  description: 'Role requires permission <em>view Blind index revisions</em> and <em>edit rights</em> for blind index entities in question or <em>administer blind index entities</em>.'
+
+delete all blind index revisions:
+  title: 'Delete all revisions'
+  description: 'Role requires permission to <em>view Blind index revisions</em> and <em>delete rights</em> for blind index entities in question or <em>administer blind index entities</em>.'
+
