@@ -91,6 +91,7 @@ class FieldEncryptSearchableProcessEntities implements FieldEncryptSearchablePro
           $definition = $entity->{$blindIndexField}->getFieldDefinition();
           /* @var $storage FieldConfigStorageBase */
           $storage = $definition->get('fieldStorage');
+          $fieldType = $definition->getType();
           $encryption_profile_id = $storage->getThirdPartySetting('field_encrypt', 'encryption_profile', []);
           $encryption_profile = Drupal::service('encrypt.encryption_profile.manager')
             ->getEncryptionProfile($encryption_profile_id);
@@ -115,7 +116,7 @@ class FieldEncryptSearchableProcessEntities implements FieldEncryptSearchablePro
               for ($position = 0; $position <= mb_strlen($value) - $length; $position++) {
                 $prepareBlindIndex->addBlindIndex(
                   new BlindIndex(
-                    "search_like_{$length}_{$position}",
+                    "{$fieldType}-[{$position}_{$length}]",
                     [new SearchLikeTransformation($position, $length)],
                     128
                   )
