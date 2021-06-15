@@ -1,10 +1,11 @@
 {
-  "name": "drupal/field_encrypt_searchable",
-  "description": "Provide search function on encrypted field.",
-  "type": "drupal-module",
-  "license": "GPL-2.0+",
-  "homepage": "https://www.drupal.org/project/field_encrypt_searchable",
-  "require": {
-    "paragonie/ciphersweet": "^2.0"
-  }
+    "name": "drupal/field_encrypt_searchable",
+    "description": "Provide search function on encrypted field.",
+    "type": "drupal-module",
+    "license": "GPL-2.0+",
+    "homepage": "https://www.drupal.org/project/field_encrypt_searchable",
+    "require": {
+        "paragonie/ciphersweet": "^2.0",
+        "drupal/encrypt": "^2.0@alpha"
+    }
 }

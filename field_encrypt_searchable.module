@@ -4,6 +4,20 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\field_encrypt_searchable\FieldEncryptSearchableProcessEntitiesInterface;
 
 /**
+ * Implements hook_field_views_data_alter().
+ */
+function field_encrypt_searchable_field_views_data_alter(array &$data, \Drupal\field\FieldStorageConfigInterface $field_storage)
+{
+  $data['views']['encrypted_field_filter'] = [
+    'title' => t('Encrypted field filter'),
+    'help' => t('Provides a custom filter for encrypted fields.'),
+    'filter' => [
+      'id' => 'encrypted_field_filter',
+    ],
+  ];
+}
+
+/**
  * Implements hook_entity_insert().
  */
 function field_encrypt_searchable_entity_insert(Drupal\Core\Entity\EntityInterface $entity)
