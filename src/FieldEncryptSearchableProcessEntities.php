@@ -111,63 +111,37 @@ class FieldEncryptSearchableProcessEntities implements FieldEncryptSearchablePro
           ];
           foreach ($values as $key => $value) {
             $value = reset($value);
-            $prepareBlindIndex = (new EncryptedField($engine));
+            $indexes = [];
             for ($length = 1; $length <= mb_strlen($value); $length++) {
               for ($position = 0; $position <= mb_strlen($value) - $length; $position++) {
+                $prepareBlindIndex = new EncryptedField($engine);
                 $prepareBlindIndex->addBlindIndex(
                   new BlindIndex(
-                    "{$fieldType}-[{$position}_{$length}]",
+                    "encrypt_searchable",
                     [new SearchLikeTransformation($position, $length)],
                     128
                   )
                 );
+                $indexes["{$fieldType}-[{$position}_{$length}]"] = $prepareBlindIndex->getBlindIndex($value, 'encrypt_searchable');
               }
             }
-            $indexes = $prepareBlindIndex->getAllBlindIndexes($value);
+
+            $deleteQuery = Drupal::entityQuery('blind_index_entity');
+            foreach ($query as $field => $field_value) {
+              $deleteQuery->condition($field, $field_value);
+            }
+            $deletedIndexIds = $deleteQuery->execute();
+            foreach ($deletedIndexIds as $deletedIndexId) {
+              BlindIndexEntity::load($deletedIndexId)->delete();
+            }
+
             foreach ($indexes as $indexName => $index) {
-              $blindIndexEntity = Drupal::entityTypeManager()
-                ->getStorage('blind_index_entity')
-                ->loadByProperties($query + [
-                    'name' => $indexName,
-                    'entity_field_delta' => $key,
-                  ]);
-              $blindIndexEntity = reset($blindIndexEntity);
-              $existIndexNames[] = $indexName;
-              $existDelta[] = $key;
-
-              if (!empty($blindIndexEntity)) {
-                $blindIndexEntity->set('index_value', $index);
-                $blindIndexEntity->save();
-              }
-              else {
-                BlindIndexEntity::create($query + [
-                    'name' => $indexName,
-                    'index_value' => $index,
-                    'entity_field_delta' => $key,
-                  ])->save();
-              }
+              BlindIndexEntity::create($query + [
+                  'name' => $indexName,
+                  'index_value' => $index,
+                  'entity_field_delta' => $key,
+                ])->save();
             }
-          }
-
-          $deleteQuery = Drupal::entityQuery('blind_index_entity');
-          foreach ($query as $key => $value) {
-            $deleteQuery->condition($key, $value);
-          }
-
-          if (!empty($existIndexNames) || !empty(!$existDelta)) {
-            $or = $deleteQuery->orConditionGroup();
-            if (!empty($existIndexNames)) {
-              $or->condition('name', $existIndexNames, 'NOT IN');
-            }
-            if (!empty($existDelta)) {
-              $or->condition('entity_field_delta', $existDelta, 'NOT IN');
-            }
-            $deleteQuery->condition($or);
-          }
-          $deletedIndexIds = $deleteQuery->execute();
-
-          foreach ($deletedIndexIds as $deletedIndexId) {
-            BlindIndexEntity::load($deletedIndexId)->delete();
           }
         }
       }
